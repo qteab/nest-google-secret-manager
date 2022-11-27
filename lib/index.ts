@@ -1,5 +1,2 @@
-const sum = (...numbers: number[]) => {
-  return numbers.reduce((tot, curr) => tot + curr, 0)
-}
-
-export { sum }
+export { SecretManagerModule } from './secretmanager.module'
+export { SecretManagerService } from './secretmanager.service'

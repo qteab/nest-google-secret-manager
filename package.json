@@ -1,11 +1,13 @@
 {
-  "name": "@qte/nest-google-secret-reader",
+  "name": "@qte/nest-google-secret-manager",
   "version": "0.0.0-development",
   "private": false,
   "main": "dist/index.js",
   "author": "Jakob Råhlén <jakob@qte.se>",
   "license": "MIT",
-  "files": ["/dist"],
+  "files": [
+    "/dist"
+  ],
   "scripts": {
     "build": "rm -rf dist && tsc -p tsconfig.build.json",
     "test": "jest --config ./jest.json",
@@ -50,5 +52,8 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "@google-cloud/secret-manager": "^4.1.4"
   }
 }
