@@ -7,13 +7,14 @@ import { SecretManagerService } from './secretmanager.service'
 jest.mock('./secretloader.service')
 describe('SecretManagerService', () => {
   let secretManagerService: SecretManagerService
+  let secretLoaderService: SecretLoaderService
   const preloadedSecrets = {
     'project/test-project/secrets/some-secret/versions/latest': 'some-secret',
   }
   beforeEach(async () => {
     jest.resetAllMocks()
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const secretLoaderService = new SecretLoaderService(null as any)
+    secretLoaderService = new SecretLoaderService(null as any)
     ;(secretLoaderService.loadSecret as jest.Mock).mockImplementationOnce(() => 'some-secret')
 
     const moduleRef = await Test.createTestingModule({
@@ -58,6 +59,18 @@ describe('SecretManagerService', () => {
     }).toThrow(SecretNotLoadedException)
 
     await secretManagerService.loadSecretDynamic(secret)
+    expect(secretManagerService.getSecret(secret)).toEqual('some-secret')
+  })
+
+  it('does not do external lookups for cached secrets', async () => {
+    const secret = 'project/test-project/secrets/no-secret/versions/latest'
+    expect(() => {
+      secretManagerService.getSecret(secret)
+    }).toThrow(SecretNotLoadedException)
+
+    await secretManagerService.loadSecretDynamic(secret)
+    await secretManagerService.loadSecretDynamic(secret)
+    expect(secretLoaderService.loadSecret).toHaveBeenCalledTimes(1)
     expect(secretManagerService.getSecret(secret)).toEqual('some-secret')
   })
 })
