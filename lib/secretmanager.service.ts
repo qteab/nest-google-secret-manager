@@ -24,6 +24,9 @@ export class SecretManagerService {
   }
 
   public async loadSecretDynamic(secret: string) {
+    if (this.secrets[secret]) {
+      return this.secrets[secret]
+    }
     const value = await this.secretLoaderService.loadSecret(secret)
     this.secrets = {
       ...this.secrets,
